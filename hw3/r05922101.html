@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>CI-SYUAN YANG</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style>
+		table, th, td {
+    		border: 1px solid black;
+		}
+		</style>
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body style="font-family:Microsoft JhengHei;"微軟正黑體>
+		<h1>HW3-Environment Lights</h1>
+		<h2>1.mediancut實作方法</h1>
+		<h3>constructor</h2>
+		<blockquote>以<code>Y=0.2125R+0.7154G+0.0721B</code>將原本的<code>texel array</code>做轉換並乘上
+		<br><code>float sinTheta = sinf(M_PI * float(v + .5f) / float(height));</code>
+		<br>得到灰階圖。接著跑<code>DivideImage</code>這個recursive function</blockquote>
+		<h3>DivideImage</h3>
+		<blockquote>輸入要切割區域的直向跟橫向的起終點texel number，以長的那邊做切割並沿著短軸將其上點的灰階值做累加。
+		接著決定要切再長軸的哪個點，方法是在長軸的頭尾各放一個bucket，若頭的值比較小則頭的index+1並且加入對應點的灰階值，尾的值比較小則尾的index-1並且加入對應點的灰階值。
+		直到頭的index比尾的index大1則用頭的index當作切割軸，並做recursive call。當切割的總個數達到nSample時進入recursive的中止條件，也就是計算該區域代表光源的位置，方法就是把區域內所有texel的灰階值乘上該點的座標並相加，最後再除以區域內所有灰階值的相加，得到代表光源的位置。並把整個區域的spectrum相加當作該點的spectrum存進一個vector中，所以當整個recursive的DivideImage跑完時vector內會有nSample個點光源的資訊</blockquote>
+		<h3>Sample_L</h3>
+		<blockquote>以亂數決定要從vector中取出哪個點光源，並把他的s, t座標分別對應到phi, theta得到球座標。
+		把球座標轉回直角座標就是wi的方向，且<code>pdf =1 / nSample</code>，並把vector內該點的spectrum傳回</blockquote>
+		<h2>2.所有結果圖</h1>
+		<p>envlight-4 &amp; envlight-4-my</p>
+		<img src="images/envlight-4.JPG" alt="Smiley face">
+		<img src="images/envlight-4-my.JPG" alt="Smiley face">
+		<br><p>envlight-16 &amp; envlight-16-my</p>
+		<img src="images/envlight-16.JPG" alt="Smiley face">
+		<img src="images/envlight-16-my.JPG" alt="Smiley face" >
+		<br><p>envlight-64 &amp; envlight-64-my</p>
+		<img src="images/envlight-64.JPG" alt="Smiley face">
+		<img src="images/envlight-64-my.JPG" alt="Smiley face">
+		<br><P>envlight-256 &amp; envlight-256-my</P>
+		<img src="images/envlight-256.JPG" alt="Smiley face">
+		<img src="images/envlight-256-my.JPG" alt="Smiley face">
+		<p>envlight-new-4 &amp; envlight-new-4-my</p>
+		<img src="images/envlight-new-4.JPG" alt="Smiley face">
+		<img src="images/envlight-new-4-my.JPG" alt="Smiley face">
+		<br><p>envligh-newt-16 &amp; envlight-1-new-my</p>
+		<img src="images/envlight-new-16.JPG" alt="Smiley face">
+		<img src="images/envlight-new-16-my.JPG" alt="Smiley face">
+		<br><p>envlight-new-64 &amp; envlight-new-64-my</p>
+		<img src="images/envlight-new-64.JPG" alt="Smiley face">
+		<img src="images/envlight-new-64-my.JPG" alt="Smiley face">
+		<br><P>envlight-new-256 &amp; envlight-new-256-my</P>
+		<img src="images/envlight-new-256.JPG" alt="Smiley face">
+		<img src="images/envlight-new-256-my.JPG" alt="Smiley face">
+		<h2>3.執行環境</h1>
+		<blockquote>CPU: Intel Xeon E5-2650 v3 40core 2.3GHz, MEM: 128G, OS: Debian 64bit</blockquote>
+		<h2>4.速度比較</h1>
+		<table style="width:100%">
+		  <tr>
+		    <th>type</th>
+		    <th>default time(sec)</th> 
+		    <th>my time(sec)</th>
+		  </tr>
+		  <tr>
+		    <td>envlight-4</td>
+		    <td>6.02</td>
+		    <td>5.45</td>
+		  </tr>
+		  <tr>
+		    <td>envlight-16</td>
+		    <td>5.93</td>
+		    <td>6.04</td>
+		  </tr>
+		  <tr>
+		    <td>envlight-64</td>
+		    <td>6.98</td>
+		    <td>9.26</td>
+		  </tr>
+		  <tr>
+		    <td>envlight-256</td>
+		    <td>9.6</td>
+		    <td>21.08</td>
+		  </tr>
+		  <tr>
+		    <td>envlight-new-4</td>
+		    <td>14.45</td>
+		    <td>8.7</td>
+		  </tr>
+		  <tr>
+		    <td>envlight-new-16</td>
+		    <td>14.46</td>
+		    <td>9.61</td>
+		  </tr>
+		  <tr>
+		    <td>envlight-new-64</td>
+		    <td>15.73</td>
+		    <td>13.48</td>
+		  </tr>
+		  <tr>
+		    <td>envlight-new-256</td>
+		    <td>25.43</td>
+		    <td>27.79</td>
+		  </tr>
+		</table>
+	</body>
